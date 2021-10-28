@@ -20,6 +20,25 @@ Pacman agents (in searchAgents.py).
 import util
 
 
+class Node:
+    def __init__(self, state):
+        self.path = list()
+        self.state = state
+
+    def get_state(self):
+        return self.state
+
+    def get_path(self):
+        return self.state
+
+    def add_node_to_path(self, node):
+        self.path += node
+
+    def solution(self):
+        return self.path
+
+
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -89,6 +108,13 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    frontier = [(Node(problem.getStartState))]
+    closed_list = list()
+    while frontier:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.solution()
+        frontier.extend(node.expande(problem))
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
