@@ -22,11 +22,11 @@ import util
 
 class Node:
 
-    def __init__(self, state, price, direction, path):
-        self.price = 0
+    def __init__(self, state, price, price_path, direction, path):
+        self.price_path = 0
         self.path = list()
         self.state = state
-        self.price += price
+        self.price_path += price + price_path
         self.direction = direction
         if len(path) > 0:
             for dir in path:
@@ -36,22 +36,25 @@ class Node:
     def get_state(self):
         return self.state
 
+    def get_price(self):
+        return self.price_path
+
     def get_path(self):
         return self.path
 
-    def add_node_to_path(self, node):
-        self.path += node
-        self.price += node.price
+    # def add_node_to_path(self, node):
+    #    self.path += node
+    #    self.price += node.price
 
-    def solution(self):
-        return self.path, self.price
+    # def solution(self):
+    #    return self.path, self.price
 
     def expand(self, problem):
         list_n = problem.getSuccessors(self.state)
         node_list = list()
         for success in list_n:
             (n, dir, cost) = success
-            node_list.append(Node(n, cost, dir, self.path))
+            node_list.append(Node(n, cost, self.price_path, dir, self.path))
         return node_list
 
 
@@ -124,7 +127,7 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    first_node = Node(problem.getStartState(), 0, "", "")
+    first_node = Node(problem.getStartState(), 0, 0, "", "")
     frontier = util.Stack()
     frontier.push(first_node)
     frontier_list = list()
@@ -149,7 +152,7 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    first_node = Node(problem.getStartState(), 0, "", "")
+    first_node = Node(problem.getStartState(), 0, 0, "", "")
     frontier = util.Queue()
     frontier.push(first_node)
     frontier_list = list()
@@ -171,9 +174,9 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    first_node = Node(problem.getStartState(), 0, "", "")
+    first_node = Node(problem.getStartState(), 0, 0, "", "")
     frontier = util.PriorityQueue()
-    frontier.push(first_node, first_node.price)
+    frontier.push(first_node, first_node.price_path)
     frontier_list = list()
     frontier_list.append(first_node)
     # path = first_node.get_path()
@@ -182,10 +185,11 @@ def uniformCostSearch(problem):
         node = frontier.pop()
         if problem.isGoalState(node.state):
             return node.get_path()[1:]
+
         closed_list.add(node.state)
         for child in node.expand(problem):
             if child.state not in closed_list and child not in frontier_list:
-                frontier.push(child, child.price)
+                frontier.push(child, child.price_path)
                 frontier_list.append(child)
     util.raiseNotDefined()
 
@@ -201,6 +205,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    first_node = Node(problem.getStartState(), 0, 0, "", "")
+
+    def g(x, y):
+        print(x)
+        print(y)
+        return x + y
+
+    # price = first_node.get_price()
+    # heuristic = heuristic(first_node.state, problem)
+
+    frontier = util.PriorityQueueWithFunction(g(first_node.price_path, heuristic(first_node.state, problem)))
+    frontier.push(first_node)
+    frontier_list = list()
+    frontier_list.append(first_node)
+    # path = first_node.get_path()
+    closed_list = set()
+    while frontier:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.get_path()[1:]
+        closed_list.add(node.state)
+        for child in node.expand(problem):
+            if child.state not in closed_list and child not in frontier_list:
+                frontier.push(child)
+                frontier_list.append(child)
     util.raiseNotDefined()
 
 
