@@ -21,16 +21,23 @@ import util
 
 
 class Node:
-    def __init__(self, state, price):
+
+    def __init__(self, state, price, direction, path):
+        self.price = 0
         self.path = list()
-        self.price = price
         self.state = state
+        self.price += price
+        self.direction = direction
+        if len(path) > 0:
+            for dir in path:
+                self.path.append(dir)
+        self.path.append(direction)
 
     def get_state(self):
         return self.state
 
     def get_path(self):
-        return self.state
+        return self.path
 
     def add_node_to_path(self, node):
         self.path += node
@@ -40,37 +47,11 @@ class Node:
         return self.path, self.price
 
     def expand(self, problem):
-        list_nodes = list()
-        # print(12)
-        # print(problem.getSuccessors(self.state))
-        #for tup in problem:
-        #    print(tup)
-        #    (state, direction, cost) = tup
-        #    list_nodes.append(Node(state, cost))
-        # print(9)
-
-        # print(1)
-        # print(problem)
-        # print(self.state)
-        # print(problem.getSuccessors(self.state))
-        # print(2)
         list_n = problem.getSuccessors(self.state)
-        # print(list_n)
-        # list_nodes.append(problem.getSuccessors(self.state)[0][0])
-        # print(list_nodes)
-        # print(list_nodes[0])
-        # print(list_nodes[1])
-        # print(12)
         node_list = list()
         for success in list_n:
             (n, dir, cost) = success
-            # print(n)
-            # print(dir)
-            # print(cost)
-            # print(success)
-            node_list.append(Node(n, cost))
-        # print(72)
-        # print(node_list)
+            node_list.append(Node(n, cost, dir, self.path))
         return node_list
 
 
@@ -143,49 +124,22 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    path = list()
-    first_node = Node(problem.getStartState(), 0)
+    first_node = Node(problem.getStartState(), 0, "", "")
     frontier = util.Stack()
     frontier.push(first_node)
     frontier_list = list()
-    frontier_list.append(Node(problem.getStartState(), 0))
-    # frontier = [()]
-    # print(2)
-    # print(problem.getStartState())
-    # print(3)
-    # print(frontier.pop().price)
-    # print(frontier.pop().price)
-    # print(frontier.pop().state)
-    # print(4)
-    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    # node = frontier.pop()
-    # print(5)
-    # print(node.state)
-    # print(problem.getSuccessors(node.state))
+    frontier_list.append(first_node)
+    # path = first_node.get_path()
     closed_list = set()
-    count = 1
-    print(166)
-    print(count)
-    print(len(frontier_list))
-    while not frontier.isEmpty():
-        count += 1
-        print(161)
-        # print(frontier)
+    while frontier:
         node = frontier.pop()
         if problem.isGoalState(node.state):
-            print(175)
-            return path
+            return node.get_path()[1:]
         closed_list.add(node.state)
-        # print(10)
         for child in node.expand(problem):
             if child.state not in closed_list and child not in frontier_list:
                 frontier.push(child)
                 frontier_list.append(child)
-                path.append(child.state)
-        # print(closed_list)
-
-    print("I'm here\n")
-        # frontier.extend(node.expand(problem))
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
@@ -195,12 +149,44 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    first_node = Node(problem.getStartState(), 0, "", "")
+    frontier = util.Queue()
+    frontier.push(first_node)
+    frontier_list = list()
+    frontier_list.append(first_node)
+    # path = first_node.get_path()
+    closed_list = set()
+    while frontier:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.get_path()[1:]
+        closed_list.add(node.state)
+        for child in node.expand(problem):
+            if child.state not in closed_list and child not in frontier_list:
+                frontier.push(child)
+                frontier_list.append(child)
     util.raiseNotDefined()
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    first_node = Node(problem.getStartState(), 0, "", "")
+    frontier = util.PriorityQueue()
+    frontier.push(first_node, first_node.price)
+    frontier_list = list()
+    frontier_list.append(first_node)
+    # path = first_node.get_path()
+    closed_list = set()
+    while frontier:
+        node = frontier.pop()
+        if problem.isGoalState(node.state):
+            return node.get_path()[1:]
+        closed_list.add(node.state)
+        for child in node.expand(problem):
+            if child.state not in closed_list and child not in frontier_list:
+                frontier.push(child, child.price)
+                frontier_list.append(child)
     util.raiseNotDefined()
 
 
