@@ -42,6 +42,9 @@ class Node:
     def get_path(self):
         return self.path
 
+    def __eq__(self, other):
+        return self.state == other.state
+
     # def add_node_to_path(self, node):
     #    self.path += node
     #    self.price += node.price
@@ -50,7 +53,11 @@ class Node:
     #    return self.path, self.price
 
     def expand(self, problem):
+        # print(53)
+        # print(self.state)
         list_n = problem.getSuccessors(self.state)
+        # print(56)
+        # print(list_n)
         node_list = list()
         for success in list_n:
             (n, dir, cost) = success
@@ -161,13 +168,22 @@ def breadthFirstSearch(problem):
     closed_list = set()
     while frontier:
         node = frontier.pop()
+        # print(173)
         if problem.isGoalState(node.state):
+            print(144)
+            print(node.get_path()[1:])
             return node.get_path()[1:]
         closed_list.add(node.state)
         for child in node.expand(problem):
+            # print("frontier")
+            # print(closed_list)
+            # print("child")
+            # print(child.state)
             if child.state not in closed_list and child not in frontier_list:
+                # print(192)
                 frontier.push(child)
                 frontier_list.append(child)
+
     util.raiseNotDefined()
 
 
@@ -206,19 +222,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     first_node = Node(problem.getStartState(), 0, 0, "", "")
-
-    def g(x, h):
-        print(x)
-        return x
-
-    # price = first_node.get_price()
-    # heuristic = heuristic(first_node.state, problem)
     f = lambda n: n.price_path + heuristic(n.state, problem)
     frontier = util.PriorityQueueWithFunction(f)
     frontier.push(first_node)
     frontier_list = list()
     frontier_list.append(first_node)
-    # path = first_node.get_path()
     closed_list = set()
     while frontier:
         node = frontier.pop()
