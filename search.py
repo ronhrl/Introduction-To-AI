@@ -223,6 +223,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     first_node = Node(problem.getStartState(), 0, 0, "", "")
     f = lambda n: n.price_path + heuristic(n.state, problem)
+
     frontier = util.PriorityQueueWithFunction(f)
     frontier.push(first_node)
     frontier_list = list()
