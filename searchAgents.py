@@ -591,37 +591,26 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    # if state == problem.getStartState():
-    #     state = problem.getStartState(), corners
+    food_list = foodGrid.asList()
     heuristic = 0
-    first_state, corners = state
-    corners_left = list(corners)
-    current_position = first_state
-    while len(corners_left) > 1:
-        corners_distance = 0
-        for corner1 in corners_left:
-            for corner2 in corners_left:
-                dis = abs(corner1[0] - corner2[0]) + abs(corner1[1] - corner2[1])
-                if dis > corners_distance:
-                    farest_corners = corner1, corner2
-                    corners_distance = dis
-        pos_dis_corn1 = abs(current_position[0] - farest_corners[0][0]) + abs(current_position[1] - farest_corners[0][1])
-        pos_dis_corn2 = abs(current_position[0] - farest_corners[1][0]) + abs(current_position[1] - farest_corners[1][1])
-        if pos_dis_corn1 > pos_dis_corn2:
-            closest_corner = farest_corners[1]
-            heuristic = corners_distance + pos_dis_corn2
-        else:
-            closest_corner = farest_corners[0]
-            heuristic = corners_distance + pos_dis_corn1
-        current_position = closest_corner
-        corners_left.remove(closest_corner)
-    if len(corners_left) == 1:
-        last_dis = abs(current_position[0] - corners_left[0][0]) + abs(current_position[1] - corners_left[0][1])
-        heuristic = last_dis
-        current_position = corners_left[0]
-        corners_left.remove(current_position)
-
-    return 0
+    # first_state, corners = state
+    # corners_left = list(corners)
+    current_position = position
+    while len(food_list) > 0:
+        c = food_list[0]
+        low_dist = abs(current_position[0] - c[0]) + abs(current_position[1] - c[1])
+        for food in food_list:
+            dist = abs(current_position[0] - food[0]) + abs(current_position[1] - food[1])
+            if low_dist > dist:
+                low_dist = dist
+                closest_food = food
+            else:
+                closest_food = c
+        heuristic += (abs(current_position[0] - closest_food[0]) + abs(current_position[1] - closest_food[1]))
+        current_position = closest_food
+        food_list.remove(closest_food)
+    return heuristic
+    # return 0
 
 
 class ClosestDotSearchAgent(SearchAgent):
