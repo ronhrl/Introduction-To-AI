@@ -415,8 +415,54 @@ def cornersHeuristic(state, problem):
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+    # if state == problem.getStartState():
+    #     state = problem.getStartState(), corners
+    # heuristic = 0
+    # first_state, corners = state
+    # corners_left = list(corners)
+    # current_position = first_state
+    # while len(corners_left) > 1:
+    #     corners_distance = 0
+    #     for corner1 in corners_left:
+    #         for corner2 in corners_left:
+    #             dis = abs(corner1[0] - corner2[0]) + abs(corner1[1] - corner2[1])
+    #             if dis > corners_distance:
+    #                 farest_corners = corner1, corner2
+    #                 corners_distance = dis
+    #     pos_dis_corn1 = abs(current_position[0] - farest_corners[0][0]) + abs(current_position[1] - farest_corners[0][1])
+    #     pos_dis_corn2 = abs(current_position[0] - farest_corners[1][0]) + abs(current_position[1] - farest_corners[1][1])
+    #     if pos_dis_corn1 > pos_dis_corn2:
+    #         closest_corner = farest_corners[1]
+    #         heuristic = corners_distance + pos_dis_corn2
+    #     else:
+    #         closest_corner = farest_corners[0]
+    #         heuristic = corners_distance + pos_dis_corn1
+    #     current_position = closest_corner
+    #     corners_left.remove(closest_corner)
+    # if len(corners_left) == 1:
+    #     last_dis = abs(current_position[0] - corners_left[0][0]) + abs(current_position[1] - corners_left[0][1])
+    #     heuristic = last_dis
+    #     current_position = corners_left[0]
+    #     corners_left.remove(current_position)
+    # while len(corners_left) > 0:
+    #     c = corners_left[0]
+    #     low_dist = abs(current_position[0] - c[0]) + abs(current_position[1] - c[1])
+    #     for corner in corners_left:
+    #         dist = abs(current_position[0] - corner[0]) + abs(current_position[1] - corner[1])
+    #         if low_dist > dist:
+    #             low_dist = dist
+    #             closest_corner = corner
+    #         else:
+    #             closest_corner = c
+    #     heuristic += (abs(current_position[0] - closest_corner[0]) + abs(current_position[1] - closest_corner[1]))
+     #    current_position = closest_corner
+        # print("left")
+        # print(corners_left)
+        # print(heuristic)
+     #    corners_left.remove(closest_corner)
 
 
+    # print(state)
     if state == problem.getStartState():
         state = problem.getStartState(), corners
     heuristic = 0
@@ -435,7 +481,14 @@ def cornersHeuristic(state, problem):
                 closest_corner = c
         heuristic += (abs(current_position[0] - closest_corner[0]) + abs(current_position[1] - closest_corner[1]))
         current_position = closest_corner
+    #    print("left")
+    #    print(corners_left)
         corners_left.remove(closest_corner)
+    # print(current_position)
+    # print("heuristic")
+    # print(heuristic)
+    # print("position")
+    # print(current_position)
     return heuristic
     # return 0  # Default to trivial solution
 
@@ -538,6 +591,36 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    # if state == problem.getStartState():
+    #     state = problem.getStartState(), corners
+    heuristic = 0
+    first_state, corners = state
+    corners_left = list(corners)
+    current_position = first_state
+    while len(corners_left) > 1:
+        corners_distance = 0
+        for corner1 in corners_left:
+            for corner2 in corners_left:
+                dis = abs(corner1[0] - corner2[0]) + abs(corner1[1] - corner2[1])
+                if dis > corners_distance:
+                    farest_corners = corner1, corner2
+                    corners_distance = dis
+        pos_dis_corn1 = abs(current_position[0] - farest_corners[0][0]) + abs(current_position[1] - farest_corners[0][1])
+        pos_dis_corn2 = abs(current_position[0] - farest_corners[1][0]) + abs(current_position[1] - farest_corners[1][1])
+        if pos_dis_corn1 > pos_dis_corn2:
+            closest_corner = farest_corners[1]
+            heuristic = corners_distance + pos_dis_corn2
+        else:
+            closest_corner = farest_corners[0]
+            heuristic = corners_distance + pos_dis_corn1
+        current_position = closest_corner
+        corners_left.remove(closest_corner)
+    if len(corners_left) == 1:
+        last_dis = abs(current_position[0] - corners_left[0][0]) + abs(current_position[1] - corners_left[0][1])
+        heuristic = last_dis
+        current_position = corners_left[0]
+        corners_left.remove(current_position)
+
     return 0
 
 

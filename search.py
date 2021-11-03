@@ -223,7 +223,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     first_node = Node(problem.getStartState(), 0, 0, "", "")
     f = lambda n: n.price_path + heuristic(n.state, problem)
-
     frontier = util.PriorityQueueWithFunction(f)
     frontier.push(first_node)
     frontier_list = list()
@@ -231,13 +230,21 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     closed_list = set()
     while frontier:
         node = frontier.pop()
+        # print("node1")
+        # print(heuristic(node.state, problem))
         if problem.isGoalState(node.state):
+            # print("t")
+            # print(heuristic(node.state, problem))
             return node.get_path()[1:]
         closed_list.add(node.state)
         for child in node.expand(problem):
             if child.state not in closed_list and child not in frontier_list:
                 frontier.push(child)
                 frontier_list.append(child)
+                # print(f(child))
+                # print("p")
+                # print(child.price_path)
+        #         print("child1")
     util.raiseNotDefined()
 
 
