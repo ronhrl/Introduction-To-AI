@@ -308,7 +308,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return self.startingPosition, self.corners
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -320,25 +320,26 @@ class CornersProblem(search.SearchProblem):
         # (current, cornersRemains) = self.currentPosition
         # print("state")
         # print(state)
-        a, b = state
-        c, d = self.getStartState()
-        if a == c and b == d:
-            e, f = state, self.corners
-        else:
-            e, f = state
+        # if state == self.getStartState():
+        #     state = state, self.corners
+        current_position, corners = state
+        # a, b = state
+        # c, d = self.getStartState()
+        # if a == c and b == d:
+        #     e, f = state, self.corners
+        # else:
+        #     e, f = state
         # print("X")
         # print(e)
         # print(f)
         # if e in self.corners_list:
             # print(333)
             # self.corners_list.remove(e)
-        if len(f) == 0:
-            isGoal = True
-            # print("Goal")
-        else:
-            isGoal = False
+        if len(corners) == 0:
+            return True
+        return False
 
-        return isGoal
+        # return isGoal
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -358,29 +359,46 @@ class CornersProblem(search.SearchProblem):
             # Here's a code snippet for figuring out whether a new position hits a wall:
             # x,y = currentPosition
             "*** YOUR CODE HERE ***"
+            # if state == self.getStartState():
+            #     state = state, self.corners
+            # currPos, corners = state
+            # dx, dy = Actions.directionToVector(action)
+            # x, y = currPos
+            # nextx, nexty = int(x + dx), int(y + dy)
+            # hitsWall = self.walls[nextx][nexty]
+            # if not hitsWall:
+            #     nextPos = nextx, nexty
+            #     nextState = (nextPos, corners) if nextPos not in corners else (
+            #     nextPos, tuple([i for i in corners if i != nextPos]))
+            #     cost = 1  # Given above
+            #     successors.append((nextState, action, cost))
             tuple_list = list()
-            a, b = state
-            c, d = self.getStartState()
-            if a == c and b == d:
-                e, f = state, self.corners
-            else:
-                e, f = state
-            x, y = e
+            # if state == self.getStartState():
+            #     state = state, self.corners
+            current_position, corners = state
+            # a, b = state
+            # c, d = self.getStartState()
+            # if a == c and b == d:
+            #     e, f = state, self.corners
+            # else:
+            #     e, f = state
+            x, y = current_position
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
-                next = (nextx, nexty)
-                if next in f:
-                    for corner in f:
+                next = nextx, nexty
+                if next in corners:
+                    for corner in corners:
                         if corner != next:
                             tuple_list.append(corner)
                     corners_loc = tuple(tuple_list)
                     tup = next, corners_loc
                     successors.append((tup, action, 1))
                 else:
-                    tup = next, f
+                    tup = next, corners
                     successors.append((tup, action, 1))
+
         self._expanded += 1  # DO NOT CHANGE
         return successors
 
@@ -463,32 +481,31 @@ def cornersHeuristic(state, problem):
 
 
     # print(state)
-    if state == problem.getStartState():
-        state = problem.getStartState(), corners
+    # if state == problem.getStartState():
+    #     state = problem.getStartState(), corners
     heuristic = 0
     first_state, corners = state
     corners_left = list(corners)
     current_position = first_state
     while len(corners_left) > 0:
-        c = corners_left[0]
-        low_dist = abs(current_position[0] - c[0]) + abs(current_position[1] - c[1])
+        # c = corners_left[0]
+        # closest_corner = c
+        closest_corner = corners_left[0]
+        # low_dist = abs(current_position[0] - c[0]) + abs(current_position[1] - c[1])
+        low_dist = util.manhattanDistance(current_position, closest_corner)
         for corner in corners_left:
-            dist = abs(current_position[0] - corner[0]) + abs(current_position[1] - corner[1])
+            # dist = abs(current_position[0] - corner[0]) + abs(current_position[1] - corner[1])
+            dist = util.manhattanDistance(current_position, corner)
             if low_dist > dist:
                 low_dist = dist
                 closest_corner = corner
-            else:
-                closest_corner = c
-        heuristic += (abs(current_position[0] - closest_corner[0]) + abs(current_position[1] - closest_corner[1]))
+            # else:
+            #     closest_corner = c
+        heuristic += abs(current_position[0] - closest_corner[0]) + abs(current_position[1] - closest_corner[1])
+        # heuristic += low_dist
+        # heuristic += util.manhattanDistance(current_position, closest_corner)
         current_position = closest_corner
-    #    print("left")
-    #    print(corners_left)
         corners_left.remove(closest_corner)
-    # print(current_position)
-    # print("heuristic")
-    # print(heuristic)
-    # print("position")
-    # print(current_position)
     return heuristic
     # return 0  # Default to trivial solution
 
@@ -596,20 +613,31 @@ def foodHeuristic(state, problem):
     # first_state, corners = state
     # corners_left = list(corners)
     current_position = position
-    while len(food_list) > 0:
-        c = food_list[0]
-        low_dist = abs(current_position[0] - c[0]) + abs(current_position[1] - c[1])
-        for food in food_list:
-            dist = abs(current_position[0] - food[0]) + abs(current_position[1] - food[1])
-            if low_dist > dist:
-                low_dist = dist
-                closest_food = food
-            else:
-                closest_food = c
-        heuristic += (abs(current_position[0] - closest_food[0]) + abs(current_position[1] - closest_food[1]))
-        current_position = closest_food
-        food_list.remove(closest_food)
-    return heuristic
+    far_point = position
+    far_dis = 0
+    for food in food_list:
+        dis = mazeDistance(position, food, problem.startingGameState)
+        # print(dis)
+        if dis > far_dis:
+            far_dis = dis
+            # far_point = food
+    # while len(food_list) > 0:
+    #     c = food_list[0]
+    #     closest_food = c
+    #     low_dist = abs(current_position[0] - c[0]) + abs(current_position[1] - c[1])
+    #     for food in food_list:
+    #         dist = abs(current_position[0] - food[0]) + abs(current_position[1] - food[1])
+    #         if low_dist > dist:
+    #             low_dist = dist
+    #             closest_food = food
+            # else:
+            #    closest_food = c
+       # heuristic += abs(current_position[0] - closest_food[0]) + abs(current_position[1] - closest_food[1])
+    #     heuristic += low_dist
+    #     current_position = closest_food
+    #     food_list.remove(closest_food)
+    # heuristic = far_dis
+    return far_dis
     # return 0
 
 

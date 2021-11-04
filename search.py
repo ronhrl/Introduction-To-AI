@@ -170,8 +170,8 @@ def breadthFirstSearch(problem):
         node = frontier.pop()
         # print(173)
         if problem.isGoalState(node.state):
-            print(144)
-            print(node.get_path()[1:])
+            # print(144)
+            # print(node.get_path()[1:])
             return node.get_path()[1:]
         closed_list.add(node.state)
         for child in node.expand(problem):
@@ -222,7 +222,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     first_node = Node(problem.getStartState(), 0, 0, "", "")
-    f = lambda n: n.price_path + heuristic(n.state, problem)
+    f = lambda n: n.get_price() + heuristic(n.state, problem)
     frontier = util.PriorityQueueWithFunction(f)
     frontier.push(first_node)
     frontier_list = list()
