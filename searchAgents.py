@@ -310,7 +310,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        """The start state for this problem is a tuple of the start position and a list of all the corners"""
+        # The start state for this problem is a tuple of the start position and a list of all the corners
         return self.startingPosition, self.corners
         util.raiseNotDefined()
 
@@ -319,7 +319,7 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        """The goal is achieved when the pacman eats all the corners. therefore i don't care where the pacman is now."""
+        # The goal is achieved when the pacman eats all the corners. therefore i don't care where the pacman is now.
         current_position, corners = state
         if len(corners) == 0:
             return True
@@ -352,8 +352,8 @@ class CornersProblem(search.SearchProblem):
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
                 next = nextx, nexty
-                """In this condition i check if the next move is a corner. if it is i remove this corner from the list
-                of corners"""
+                # In this condition i check if the next move is a corner. if it is i remove this corner from the list
+                # of corners
                 if next in corners:
                     for corner in corners:
                         if corner != next:
@@ -403,8 +403,8 @@ def cornersHeuristic(state, problem):
     first_state, corners = state
     corners_left = list(corners)
     current_position = first_state
-    """In this loop, first I find the closest corner to my current location and add my heuristic value. then I 'go' to 
-    that corner and then find the closest corner and etc. until I visited all corners"""
+    # In this loop, first I find the closest corner to my current location and add my heuristic value. then I 'go' to
+    # that corner and then find the closest corner and etc. until I visited all corners
     while len(corners_left) > 0:
         closest_corner = corners_left[0]
         low_dist = util.manhattanDistance(current_position, closest_corner)
@@ -415,8 +415,9 @@ def cornersHeuristic(state, problem):
                 closest_corner = corner
         heuristic += low_dist
         current_position = closest_corner
+        # When I get to corner it removes from the list of the corners
         corners_left.remove(closest_corner)
-    """Finally the heuristic value is the sum of all distances from current location to the closest corner"""
+    # Finally the heuristic value is the sum of all distances from current location to the closest corner
     return heuristic
     # return 0  # Default to trivial solution
 
@@ -519,9 +520,10 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    # Get a list of a list of food coordinates.
     food_list = foodGrid.asList()
     far_dis = 0
-    """I find the distance to the fairest food and this is value of the heuristic"""
+    # I find the distance to the farthest food and this is value of the heuristic
     for food in food_list:
         dis = mazeDistance(position, food, problem.startingGameState)
         if dis > far_dis:

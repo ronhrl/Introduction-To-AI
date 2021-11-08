@@ -30,9 +30,8 @@ class Node:
         self.state = state
         self.price_path += price + price_path
         self.direction = direction
-        if len(path) > 0:
-            for dir in path:
-                self.path.append(dir)
+        for dir in path:
+            self.path.append(dir)
         self.path.append(direction)
 
     def get_state(self):
@@ -47,19 +46,10 @@ class Node:
     def __eq__(self, other):
         return self.state == other.state
 
-    # def add_node_to_path(self, node):
-    #    self.path += node
-    #    self.price += node.price
-
-    # def solution(self):
-    #    return self.path, self.price
+    # This function expand all the children of the node
 
     def expand(self, problem):
-        # print(53)
-        # print(self.state)
         list_n = problem.getSuccessors(self.state)
-        # print(56)
-        # print(list_n)
         node_list = list()
         for success in list_n:
             (n, dir, cost) = success
@@ -136,25 +126,24 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    # The first node doesn't have a 'father' so there is no direction that lead to him
     first_node = Node(problem.getStartState(), 0, 0, "", "")
     frontier = util.Stack()
     frontier.push(first_node)
+    # In order to check if node is in the stack i hold a list of all the nodes and checks there.
     frontier_list = list()
     frontier_list.append(first_node)
-    # path = first_node.get_path()
     closed_list = set()
     while frontier:
         node = frontier.pop()
         if problem.isGoalState(node.state):
+            # Because the first node doesn't have a father the first direction in the path is empty
             return node.get_path()[1:]
         closed_list.add(node.state)
         for child in node.expand(problem):
             if child.state not in closed_list and child not in frontier_list:
                 frontier.push(child)
                 frontier_list.append(child)
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     util.raiseNotDefined()
 
 
@@ -164,25 +153,18 @@ def breadthFirstSearch(problem):
     first_node = Node(problem.getStartState(), 0, 0, "", "")
     frontier = util.Queue()
     frontier.push(first_node)
+    # In order to check if node is in the queue i hold a list of all the nodes and checks there.
     frontier_list = list()
     frontier_list.append(first_node)
-    # path = first_node.get_path()
     closed_list = set()
     while frontier:
         node = frontier.pop()
-        # print(173)
         if problem.isGoalState(node.state):
-            # print(144)
-            # print(node.get_path()[1:])
+            # Because the first node doesn't have a father the first direction in the path is empty
             return node.get_path()[1:]
         closed_list.add(node.state)
         for child in node.expand(problem):
-            # print("frontier")
-            # print(closed_list)
-            # print("child")
-            # print(child.state)
             if child.state not in closed_list and child not in frontier_list:
-                # print(192)
                 frontier.push(child)
                 frontier_list.append(child)
 
@@ -195,15 +177,15 @@ def uniformCostSearch(problem):
     first_node = Node(problem.getStartState(), 0, 0, "", "")
     frontier = util.PriorityQueue()
     frontier.push(first_node, first_node.price_path)
+    # In order to check if node is in the priority queue i hold a list of all the nodes and checks there.
     frontier_list = list()
     frontier_list.append(first_node)
-    # path = first_node.get_path()
     closed_list = set()
     while frontier:
         node = frontier.pop()
         if problem.isGoalState(node.state):
+            # Because the first node doesn't have a father the first direction in the path is empty
             return node.get_path()[1:]
-
         closed_list.add(node.state)
         for child in node.expand(problem):
             if child.state not in closed_list and child not in frontier_list:
@@ -226,27 +208,21 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     first_node = Node(problem.getStartState(), 0, 0, "", "")
     f = lambda n: n.get_price() + heuristic(n.state, problem)
     frontier = util.PriorityQueueWithFunction(f)
+    # In order to check if node is in the priority queue i hold a list of all the nodes and checks there.
     frontier.push(first_node)
     frontier_list = list()
     frontier_list.append(first_node)
     closed_list = set()
     while frontier:
         node = frontier.pop()
-        # print("node1")
-        # print(heuristic(node.state, problem))
         if problem.isGoalState(node.state):
-            # print("t")
-            # print(heuristic(node.state, problem))
+            # Because the first node doesn't have a father the first direction in the path is empty
             return node.get_path()[1:]
         closed_list.add(node.state)
         for child in node.expand(problem):
             if child.state not in closed_list and child not in frontier_list:
                 frontier.push(child)
                 frontier_list.append(child)
-                # print(f(child))
-                # print("p")
-                # print(child.price_path)
-        #         print("child1")
     util.raiseNotDefined()
 
 
