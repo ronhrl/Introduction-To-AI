@@ -1,0 +1,12 @@
+python nodes.py -p MinimaxAgent -l minimaxClassic -f -a depth=4 -q 
+python nodes.py -p MinimaxAgent -l minimaxClassic -f -a depth=3 -q 
+python nodes.py -p MinimaxAgent -l minimaxClassic -f -a depth=2 -q
+python nodes.py -p MinimaxAgent -l minimaxClassic -f -a depth=1 -q
+
+python nodes.py -p AlphaBetaAgent -l minimaxClassic -f -a depth=4 -q 
+python nodes.py -p AlphaBetaAgent -l minimaxClassic -f -a depth=3 -q 
+python nodes.py -p AlphaBetaAgent -l minimaxClassic -f -a depth=2 -q
+python nodes.py -p AlphaBetaAgent -l minimaxClassic -f -a depth=1 -q
+
+# 6128/1807  1277/475   267/78   66/23
+# 4639/1283  949/314    235/65   52/17
